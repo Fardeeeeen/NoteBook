@@ -238,12 +238,12 @@ Contributions to the Notebook project are welcome! To contribute:
 
 ## Video or Image 📹🖼️
 Images:
-<img src = "" alt = "pages" />
-<img src = "" alt = "pages" />
-<img src = "" alt = "pages" />
-<img src = "" alt = "pages" />
-<img src = "" alt = "pages" />
-<img src = "" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%202.png" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%201.png" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%203.png" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%204.png" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%205.png" alt = "pages" />
+<img src = "https://github.com/Fardeeeeen/NoteBook/blob/main/note%206.png" alt = "pages" />
 
 ### 📧 Contact Information
 For any inquiries or support, please contact [Fardeen Zubair](mailto:fardeenzubair@gmail.com).
