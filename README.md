@@ -39,6 +39,8 @@ The frontend of the Notebook App includes a range of features to enhance user ex
 - **Create Notes**: Users can create new notes with a title, content, color, reminder, and labels.
 - **Edit Notes**: Existing notes can be edited to update the title, content, color, reminder, and labels.
 - **Label Management**: Labels can be added, deleted, and updated for better organization and categorization of notes.
+- **Color Management**: Colors can be added to the notes , and each of these color can represent a meaning according to the users wish.
+- **Reminder**: A reminder can be set to the note while being added , and these notes get added to the reminder page too.
 - **Move to Trash**: Notes can be moved to the trash, allowing users to temporarily remove them without permanent deletion.
 - **Delete Notes**: Users can delete notes permanently from the trash page.
 - **Restore Notes**: Notes from the trash can be restored to their original state.
