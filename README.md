@@ -52,6 +52,7 @@ The frontend of the Notebook App includes a range of features to enhance user ex
 - **Create Drawings**: Users can create drawings with lines and save them with associated metadata like height, width, and data URL.
 - **Download Drawings**: Drawings can be downloaded after they have been saved.
 - **Delete Drawings**: Drawings can be deleted permanently.
+- **Preview Drawings**: Users can preview the saved drawing by clicking on them.
 
 ### 🔧 Backend Functionality
 The backend of the Notebook App provides a robust set of APIs for interacting with notes and drawings:
