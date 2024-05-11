@@ -3,25 +3,19 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: process.env.PG_HOST,
-  port: process.env.PG_PORT,
-  username: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  database: process.env.PG_DATABASE,
-});
+let sequelize;
+
+if (process.env.DB_URL) {
+  sequelize = new Sequelize(process.env.DB_URL, {
+    dialect: 'postgres',
+    ssl: true,
+  });
+} else {
+  console.error("DB_URL is not available. Please check your environment configuration.");
+  process.exit(1); // Exit the application if DB_URL is not available
+}
 
 console.log('Sequelize Options:', sequelize.config);
 
-// Test the connection to the database
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection to PostgreSQL database has been established successfully.');
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
-  });
 
 export default sequelize;
