@@ -1,5 +1,4 @@
 {
-  "homepage": "https://fardeeeeen.github.io/NoteBook",
   "name": "notebook-app",
   "version": "1.0.0",
   "keywords": [],
@@ -37,8 +36,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
