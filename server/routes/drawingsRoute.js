@@ -17,27 +17,29 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Route to save a new drawing
+// Route to create a new note
 router.post('/', async (req, res) => {
-  try {
-    const { lines, data_url,height, width} = req.body;
+  const { title, content, color, reminder, labels } = req.body;
 
-    if (!lines || !data_url) {
-      console.error("Invalid drawing data:", { lines, data_url,height , width,updatedat, createdat });
-      return res.status(400).json({ message: "Lines and dataURL are required." });
+  try {
+    let newNote;
+    // Check if image_data is included in the request
+    if (req.file) {
+      const image_data = req.file.buffer; // Extract image data from the request
+      const binaryImageData = Buffer.from(image_data, 'binary');
+      const compressedImageData = await sharp(binaryImageData)
+        .resize(200)
+        .jpeg({ quality: 50 })
+        .toBuffer();
+
+      newNote = await Note.create({ title, content, color, reminder, labels, image_data: compressedImageData });
+    } else {
+      newNote = await Note.create({ title, content, color, reminder, labels });
     }
-    const newDrawing = await Drawing.create({
-      lines: lines,
-      width: width,
-      height: height,
-      data_url: data_url,
-      createdat: new Date(),
-      updatedat: new Date() 
-    });
-    res.status(201).json(newDrawing);
+    res.status(201).json(newNote);
   } catch (err) {
-    console.error("Error saving drawing:", err);
-    res.status(500).json({ message: "Failed to save drawing." });
+    console.error("Error creating note:", err);
+    res.status(400).json({ message: err.message });
   }
 });
 

@@ -27,15 +27,20 @@ function CreateArea({ onAdd }) {
   async function submitNote(event) {
   event.preventDefault();
   try {
+    // Copy note state to a new object
     const dataToSend = { ...note };
 
-    // If image data exists, remove it from dataToSend and send it separately
+    // If image data exists, create FormData and append data
     if (note.image_data) {
-      const { image_data, ...noteData } = dataToSend;
-      onAdd({ ...noteData }); // Send note data without image_data
-      onAdd({ image_data }); // Send image_data separately
+      const formData = new FormData();
+      for (const key in dataToSend) {
+        formData.append(key, dataToSend[key]);
+      }
+      // Send FormData with image data
+      await addNote(formData);
     } else {
-      onAdd(dataToSend);
+      // If no image data, send note directly
+      await addNote(dataToSend);
     }
 
     // Reset note state after submission
@@ -50,7 +55,6 @@ function CreateArea({ onAdd }) {
     console.error("Error creating note:", error);
   }
 }
-
   function handleChange(event) {
     const { name, value } = event.target;
     setNote((prevNote) => ({
