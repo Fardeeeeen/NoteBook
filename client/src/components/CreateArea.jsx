@@ -25,31 +25,31 @@ function CreateArea({ onAdd }) {
   const [selectedColor, setSelectedColor] = useState("white");
 
   async function submitNote(event) {
-  event.preventDefault();
-  try {
-    const dataToSend = { ...note };
+    event.preventDefault();
+    try {
+      const dataToSend = { ...note };
 
-    if (note.image_data) {
-      const formData = new FormData();
-      formData.append("image_data", note.image_data);
-      for (const key in dataToSend) {
-        formData.append(key, dataToSend[key]);
+      if (note.image_data) {
+        const formData = new FormData();
+        formData.append("image_data", note.image_data);
+        for (const key in dataToSend) {
+          formData.append(key, dataToSend[key]);
+        }
+        onAdd(formData);
+      } else {
+        onAdd(dataToSend);
       }
-      onAdd(formData);
-    } else {
-      onAdd(dataToSend);
+      setNote({
+        title: "",
+        content: "",
+        color: "white",
+        image_data: null,
+        reminder: null,
+      });
+    } catch (error) {
+      console.error("Error creating note:", error);
     }
-    setNote({
-      title: "",
-      content: "",
-      color: "white",
-      image_data: null,
-      reminder: null,
-    });
-  } catch (error) {
-    console.error("Error creating note:", error);
   }
-}
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -57,7 +57,7 @@ function CreateArea({ onAdd }) {
       ...prevNote,
       [name]: value,
     }));
-  };
+  }
 
   function handleColorChange(color) {
     setNote((prevNote) => ({
@@ -66,31 +66,37 @@ function CreateArea({ onAdd }) {
     }));
     setSelectedColor(color);
     toggleColorPalette();
-  };
+  }
 
- async function handleImageChange(event) {
-  const imageFile = event.target.files[0];
+  async function handleImageChange(event) {
+    const imageFile = event.target.files[0];
 
-  if (imageFile) {
+    if (imageFile) {
+      setNote((prevNote) => ({
+        ...prevNote,
+        image_data: imageFile,
+      }));
+    }
+  }
+
+  function handleReminderChange(date) {
     setNote((prevNote) => ({
       ...prevNote,
-      image_data: imageFile,
+      reminder: date,
     }));
   }
-}
-
 
   function expand() {
     setExpanded(true);
-  };
+  }
 
   function toggleColorPalette() {
     setColorPaletteOpen((prevState) => !prevState);
-  };
+  }
 
   function toggleReminderOptions() {
     setReminderOpen((prevState) => !prevState);
-  };
+  }
 
   return (
     <div>
