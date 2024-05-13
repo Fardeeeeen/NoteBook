@@ -17,8 +17,8 @@ import DrawingPopup from "./DrawingPopup";
 import SearchedNote from "./SearchedNote";
 import Footer from "./Footer";
 
-const API_URL = "http://localhost:5000/api/notes";
-const DRAWINGS_API_URL = "http://localhost:5000/api/drawings";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/notes`;
+const DRAWINGS_API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/drawings`;
 
 const useStyles = makeStyles((theme) => ({
   root: {

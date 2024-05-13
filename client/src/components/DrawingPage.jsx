@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'; 
 import DrawingPopup from './DrawingPopup';
 
-const DRAWINGS_API_URL = "http://localhost:5000/api/drawings";
+const DRAWINGS_API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/drawings`;
 
 const DrawingPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);

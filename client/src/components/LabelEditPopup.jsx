@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
-const API_URL = "http://localhost:5000/api/notes";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/notes`;
 
 const useStyles = makeStyles((theme) => ({
   labelContainer: {

@@ -7,7 +7,7 @@ import LabelIcon from "@material-ui/icons/Label";
 import LabelComponent from './LabelComponent';
 
 
-const API_URL = "http://localhost:5000/api/notes";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/notes`;
 
 function Note({ id, title, content, color, image_data,reminder, onDelete, onArchive, onRestore, isTrashPage, hideArchiveButton, onUpdateLabels,labels}) {
  

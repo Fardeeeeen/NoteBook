@@ -8,7 +8,7 @@ import AddAlertIcon from "@material-ui/icons/AddAlert";
 import { DatePicker } from "@material-ui/pickers";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/notes";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/notes`;
 
 function CreateArea({ onAdd }) {
   const [isExpanded, setExpanded] = useState(false);
