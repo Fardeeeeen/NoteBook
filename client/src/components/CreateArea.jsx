@@ -27,22 +27,16 @@ function CreateArea({ onAdd }) {
   async function submitNote(event) {
   event.preventDefault();
   try {
-    const formData = new FormData();
+    const dataToSend = { ...note };
 
-    // Append title and content to FormData
-    formData.append("title", note.title);
-    formData.append("content", note.content);
-    formData.append("color", note.color);
-    formData.append("reminder", note.reminder);
-
-    // Check if an image is selected
+    // If image data exists, remove it from dataToSend and send it separately
     if (note.image_data) {
-      // Append image data to FormData
-      formData.append("image_data", note.image_data);
+      const { image_data, ...noteData } = dataToSend;
+      onAdd({ ...noteData }); // Send note data without image_data
+      onAdd({ image_data }); // Send image_data separately
+    } else {
+      onAdd(dataToSend);
     }
-
-    // Send FormData object to onAdd function
-    onAdd(formData);
 
     // Reset note state after submission
     setNote({
