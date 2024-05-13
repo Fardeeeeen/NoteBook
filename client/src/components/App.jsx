@@ -72,16 +72,17 @@ function App() {
 
 const addNote = async (newNote) => {
   try {
-    const formData = new FormData();
-    for (const key in newNote) {
-      formData.append(key, newNote[key]);
+    let response;
+    if (newNote instanceof FormData) {
+      response = await axios.post(API_URL, newNote, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } else {
+      response = await axios.post(API_URL, newNote);
     }
-    const response = await axios.post(API_URL, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    setNotes(prevNotes => [...prevNotes, response.data]);
+    setNotes((prevNotes) => [...prevNotes, response.data]);
   } catch (error) {
     console.error("Error adding note:", error);
   }
