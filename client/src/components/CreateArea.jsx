@@ -37,10 +37,10 @@ function CreateArea({ onAdd }) {
         formData.append(key, dataToSend[key]);
       }
       // Send FormData with image data
-      await addNote(formData);
+      onAdd(formData);
     } else {
       // If no image data, send note directly
-      await addNote(dataToSend);
+      onAdd(dataToSend);
     }
 
     // Reset note state after submission
