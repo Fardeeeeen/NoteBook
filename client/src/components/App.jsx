@@ -84,7 +84,7 @@ const addNote = async (newNote) => {
     }
     setNotes((prevNotes) => [...prevNotes, response.data]);
   } catch (error) {
-    console.error("Error adding note:", error);
+    console.error("Error adding note:", error.response);
   }
 };
 
