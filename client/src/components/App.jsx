@@ -81,7 +81,12 @@ const addNote = async (newNote) => {
         },
       });
     } else {
-      response = await axios.post(API_URL, newNote);
+      // If newNote is a regular object, convert it to FormData
+      const formData = new FormData();
+      for (const key in newNote) {
+        formData.append(key, newNote[key]);
+      }
+      response = await axios.post(API_URL, formData);
     }
     setNotes((prevNotes) => [...prevNotes, response.data]);
   } catch (error) {
