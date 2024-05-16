@@ -27,22 +27,24 @@ function CreateArea({ onAdd }) {
  async function submitNote(event) {
   event.preventDefault();
   try {
-    const dataToSend = { ...note };
+    let dataToSend;
 
     if (note.image_data) {
-      const formData = new FormData();
-      // Append title and content fields to FormData
-      formData.append('title', dataToSend.title);
-      formData.append('content', dataToSend.content);
-      // Append image data
-      formData.append('image_data', dataToSend.image_data);
-      
-      // Send FormData with image data
-      onAdd(formData);
+      // If image data exists, create a FormData object
+      dataToSend = new FormData();
+      dataToSend.append('title', note.title);
+      dataToSend.append('content', note.content);
+      dataToSend.append('image_data', note.image_data);
     } else {
-      // If no image data, send note directly
-      onAdd(dataToSend);
+      // If no image data, send a regular object
+      dataToSend = {
+        title: note.title,
+        content: note.content,
+      };
     }
+
+    // Send data with either FormData or regular object
+    await onAdd(dataToSend);
 
     // Reset note state after submission
     setNote({
