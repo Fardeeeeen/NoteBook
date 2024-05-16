@@ -24,22 +24,25 @@ function CreateArea({ onAdd }) {
 
   const [selectedColor, setSelectedColor] = useState("white");
 
-async function submitNote(event) {
+ async function submitNote(event) {
   event.preventDefault();
   try {
-    const dataToSend = new FormData();
+    const dataToSend = { ...note };
 
-    // Append title and content fields to FormData
-    dataToSend.append('title', note.title);
-    dataToSend.append('content', note.content);
-
-    // If image data exists, append it to FormData
     if (note.image_data) {
-      dataToSend.append('image_data', note.image_data);
+      const formData = new FormData();
+      // Append title and content fields to FormData
+      formData.append('title', dataToSend.title);
+      formData.append('content', dataToSend.content);
+      // Append image data
+      formData.append('image_data', dataToSend.image_data);
+      
+      // Send FormData with image data
+      onAdd(formData);
+    } else {
+      // If no image data, send note directly
+      onAdd(dataToSend);
     }
-
-    // Send FormData with image data
-    onAdd(dataToSend);
 
     // Reset note state after submission
     setNote({
@@ -53,7 +56,6 @@ async function submitNote(event) {
     console.error("Error creating note:", error);
   }
 }
-
   function handleChange(event) {
     const { name, value } = event.target;
     setNote((prevNote) => ({
