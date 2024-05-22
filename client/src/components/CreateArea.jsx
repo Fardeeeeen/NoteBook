@@ -35,19 +35,11 @@ async function submitNote(event) {
 
     // If image data exists, append it to FormData
     if (note.image_data) {
-      const formData = new FormData();
-      // Append title and content fields to FormData
-      formData.append('title', dataToSend.title);
-      formData.append('content', dataToSend.content);
-      // Append image data
-      formData.append('image_data', dataToSend.image_data);
-      
-      // Send FormData with image data
-      onAdd(formData);
-    } else {
-      // If no image data, send note directly
-      onAdd(dataToSend);
+      dataToSend.append('image_data', note.image_data);
     }
+
+    // Send FormData with image data
+    onAdd(dataToSend);
 
     // Reset note state after submission
     setNote({
