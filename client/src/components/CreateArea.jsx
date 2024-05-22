@@ -24,7 +24,7 @@ function CreateArea({ onAdd }) {
 
   const [selectedColor, setSelectedColor] = useState("white");
 
-  async function submitNote(event) {
+ async function submitNote(event) {
   event.preventDefault();
   try {
     let dataToSend;
@@ -64,6 +64,34 @@ function CreateArea({ onAdd }) {
     console.error("Error creating note:", error);
   }
 }
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setNote((prevNote) => ({
+      ...prevNote,
+      [name]: value,
+    }));
+  }
+
+  function handleColorChange(color) {
+    setNote((prevNote) => ({
+      ...prevNote,
+      color: color,
+    }));
+    setSelectedColor(color);
+    toggleColorPalette();
+  }
+
+  async function handleImageChange(event) {
+    const imageFile = event.target.files[0];
+
+    if (imageFile) {
+      setNote((prevNote) => ({
+        ...prevNote,
+        image_data: imageFile,
+      }));
+    }
+  }
 
   function handleReminderChange(date) {
     setNote((prevNote) => ({
