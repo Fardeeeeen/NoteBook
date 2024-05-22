@@ -24,35 +24,32 @@ function CreateArea({ onAdd }) {
 
   const [selectedColor, setSelectedColor] = useState("white");
 
-async function submitNote(event) {
+  async function submitNote(event) {
   event.preventDefault();
   try {
-    const dataToSend = new FormData();
+    const dataToSend = { ...note };
 
-    // Append title and content fields to FormData
-    dataToSend.append('title', note.title);
-    dataToSend.append('content', note.content);
-
-    // If image data exists, append it to FormData
-    if (note.image_data) {
-      dataToSend.append('image_data', note.image_data);
+      if (note.image_data) {
+        const formData = new FormData();
+        formData.append("image_data", note.image_data);
+        for (const key in dataToSend) {
+          formData.append(key, dataToSend[key]);
+        }
+        onAdd(formData);
+      } else {
+        onAdd(dataToSend);
+      }
+      setNote({
+        title: "",
+        content: "",
+        color: "white",
+        image_data: null,
+        reminder: null,
+      });
+    } catch (error) {
+      console.error("Error creating note:", error);
     }
-
-    // Send FormData with image data
-    onAdd(dataToSend);
-
-    // Reset note state after submission
-    setNote({
-      title: "",
-      content: "",
-      color: "white",
-      image_data: null,
-      reminder: null,
-    });
-  } catch (error) {
-    console.error("Error creating note:", error);
   }
-}
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -60,7 +57,7 @@ async function submitNote(event) {
       ...prevNote,
       [name]: value,
     }));
-  }
+  };
 
   function handleColorChange(color) {
     setNote((prevNote) => ({
@@ -69,37 +66,31 @@ async function submitNote(event) {
     }));
     setSelectedColor(color);
     toggleColorPalette();
-  }
+  };
 
-  async function handleImageChange(event) {
-    const imageFile = event.target.files[0];
+ async function handleImageChange(event) {
+  const imageFile = event.target.files[0];
 
-    if (imageFile) {
-      setNote((prevNote) => ({
-        ...prevNote,
-        image_data: imageFile,
-      }));
-    }
-  }
-
-  function handleReminderChange(date) {
+  if (imageFile) {
     setNote((prevNote) => ({
       ...prevNote,
-      reminder: date,
+      image_data: imageFile,
     }));
   }
+}
+
 
   function expand() {
     setExpanded(true);
-  }
+  };
 
   function toggleColorPalette() {
     setColorPaletteOpen((prevState) => !prevState);
-  }
+  };
 
   function toggleReminderOptions() {
     setReminderOpen((prevState) => !prevState);
-  }
+  };
 
   return (
     <div>
