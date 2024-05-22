@@ -25,59 +25,45 @@ function CreateArea({ onAdd }) {
   const [selectedColor, setSelectedColor] = useState("white");
 
   async function submitNote(event) {
-    event.preventDefault();
-    try {
-      const dataToSend = { ...note };
+  event.preventDefault();
+  try {
+    let dataToSend;
 
-      if (note.image_data) {
-        const formData = new FormData();
-        formData.append("image_data", note.image_data);
-        for (const key in dataToSend) {
-          formData.append(key, dataToSend[key]);
-        }
-        onAdd(formData);
-      } else {
-        onAdd(dataToSend);
+    if (note.image_data) {
+      // If image data exists, create a FormData object
+      dataToSend = new FormData();
+      dataToSend.append('title', note.title);
+      dataToSend.append('content', note.content);
+      dataToSend.append('image_data', note.image_data);
+      dataToSend.append('color', note.color);
+      if (note.reminder) {
+        dataToSend.append('reminder', note.reminder);
       }
-      setNote({
-        title: "",
-        content: "",
-        color: "white",
-        image_data: null,
-        reminder: null,
-      });
-    } catch (error) {
-      console.error("Error creating note:", error);
+    } else {
+      // If no image data, send a regular object
+      dataToSend = {
+        title: note.title,
+        content: note.content,
+        color: note.color,
+        reminder: note.reminder,
+      };
     }
-  }
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setNote((prevNote) => ({
-      ...prevNote,
-      [name]: value,
-    }));
-  }
+    // Send data with either FormData or regular object
+    await onAdd(dataToSend);
 
-  function handleColorChange(color) {
-    setNote((prevNote) => ({
-      ...prevNote,
-      color: color,
-    }));
-    setSelectedColor(color);
-    toggleColorPalette();
+    // Reset note state after submission
+    setNote({
+      title: "",
+      content: "",
+      color: "white",
+      image_data: null,
+      reminder: null,
+    });
+  } catch (error) {
+    console.error("Error creating note:", error);
   }
-
-  async function handleImageChange(event) {
-    const imageFile = event.target.files[0];
-
-    if (imageFile) {
-      setNote((prevNote) => ({
-        ...prevNote,
-        image_data: imageFile,
-      }));
-    }
-  }
+}
 
   function handleReminderChange(date) {
     setNote((prevNote) => ({

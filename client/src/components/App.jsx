@@ -73,6 +73,7 @@ function App() {
 const addNote = async (newNote) => {
   try {
     let response;
+
     if (newNote instanceof FormData) {
       response = await axios.post(API_URL, newNote, {
         headers: {
@@ -82,9 +83,10 @@ const addNote = async (newNote) => {
     } else {
       response = await axios.post(API_URL, newNote);
     }
+
     setNotes((prevNotes) => [...prevNotes, response.data]);
   } catch (error) {
-    console.error("Error adding note:", error.response);
+    console.error("Error adding note:", error.response.data);
   }
 };
 
