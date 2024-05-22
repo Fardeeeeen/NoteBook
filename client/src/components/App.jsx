@@ -73,7 +73,6 @@ function App() {
 const addNote = async (newNote) => {
   try {
     let response;
-    // Check if newNote is an instance of FormData
     if (newNote instanceof FormData) {
       response = await axios.post(API_URL, newNote, {
         headers: {
@@ -81,12 +80,7 @@ const addNote = async (newNote) => {
         },
       });
     } else {
-      // If newNote is a regular object, convert it to FormData
-      const formData = new FormData();
-      for (const key in newNote) {
-        formData.append(key, newNote[key]);
-      }
-      response = await axios.post(API_URL, formData);
+      response = await axios.post(API_URL, newNote);
     }
     setNotes((prevNotes) => [...prevNotes, response.data]);
   } catch (error) {
