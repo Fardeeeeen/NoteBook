@@ -52,47 +52,36 @@ const handleSaveDrawing = async () => {
   if (canvasRef.current) {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
-
-    // Ensure lines are defined
     const lines = JSON.parse(drawingData).lines;
+    const width = canvasRef.current.canvas.width;
+    const height = canvasRef.current.canvas.height;
+    const binaryData = atob(dataUrl.split(',')[1]);
+    const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
     if (!Array.isArray(lines) || !lines.length) {
       console.error("Invalid drawing data format.");
       return;
     }
-
-    const width = canvasRef.current.canvas.width;
-    const height = canvasRef.current.canvas.height;
     
-    // Convert base64 string to binary data
-    const binaryData = atob(dataUrl.split(',')[1]);
-    const totalChunks = Math.ceil(binaryData.length / chunkSize);
-
-    // Chunk the binary data
-    const chunks = [];
-    for (let i = 0; i < totalChunks; i++) {
+ for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min((i + 1) * chunkSize, binaryData.length);
-      chunks.push(binaryData.slice(start, end));
-    }
-
-    try {
-      // Send each chunk to the server
-      for (let i = 0; i < chunks.length; i++) {
-        const response = await axios.post(DRAWINGS_API_URL, {
+      const chunk = binaryData.slice(start, end);
+      try {
+        await axios.post(DRAWINGS_API_URL, {
           lines: lines,
           width: width,
           height: height,
-          data_url: chunks[i],
+          data_url: chunk,
           chunkIndex: i,
           totalChunks: totalChunks,
         });
+      } catch (error) {
+        console.error("Error saving chunk:", error);
+        // Handle error appropriately
       }
-
-      setIsPopupOpen(false);
-    } catch (error) {
-      console.error("Error saving drawing:", error);
     }
+    setIsPopupOpen(false);
   }
 };
 
