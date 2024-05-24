@@ -52,6 +52,17 @@ const handleSaveDrawing = async () => {
   if (canvasRef.current) {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
+
+    // Ensure lines are defined
+    const lines = JSON.parse(drawingData).lines;
+
+    if (!Array.isArray(lines) || !lines.length) {
+      console.error("Invalid drawing data format.");
+      return;
+    }
+
+    const width = canvasRef.current.canvas.width;
+    const height = canvasRef.current.canvas.height;
     
     // Convert base64 string to binary data
     const binaryData = atob(dataUrl.split(',')[1]);
