@@ -110,6 +110,8 @@ footer p {
   margin: 16px;
   float: left;
   overflow: auto;
+  min-height: 300px;
+  min-width: 300px;
   max-width: 300px;
   max-height: 300px;
   position: relative;
@@ -386,6 +388,8 @@ span.label{
       margin: 16px;
       float: left;
       overflow: auto;
+      min-height: 300px;
+        min-width: 300px;
       max-width: 300px;
       max-height: 300px;
       position: relative;
@@ -411,6 +415,8 @@ span.label{
       margin: 16px;
       float: left;
       overflow: auto;
+      min-height: 300px;
+        min-width: 300px;
       max-width: 340px;
       max-height: 300px;
       position: relative;
@@ -429,7 +435,8 @@ span.label{
           flex-direction: column;
           justify-content: center;
           background-color: transparent;
-        }drawing-note img {
+        }
+        .drawing-note img {
           height: 240px;
           width: 400px;
           background-color: white;
