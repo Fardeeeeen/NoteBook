@@ -417,7 +417,7 @@ span.label{
       overflow: auto;
       min-height: 300px;
         min-width: 300px;
-      max-width: 340px;
+      max-width: 300px;
       max-height: 300px;
       position: relative;
       display: flex;
