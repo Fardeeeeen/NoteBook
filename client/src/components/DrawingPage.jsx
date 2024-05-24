@@ -62,8 +62,17 @@ const handleSaveDrawing = async () => {
       console.error("Invalid drawing data format.");
       return;
     }
-    
- for (let i = 0; i < totalChunks; i++) {
+
+    console.log("Payload before axios post:", {
+      lines: lines,
+      width: width,
+      height: height,
+      data_url: chunk,
+      chunkIndex: i,
+      totalChunks: totalChunks,
+    });
+
+    for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min((i + 1) * chunkSize, binaryData.length);
       const chunk = binaryData.slice(start, end);
@@ -81,6 +90,16 @@ const handleSaveDrawing = async () => {
         // Handle error appropriately
       }
     }
+
+    console.log("Payload after axios post:", {
+      lines: lines,
+      width: width,
+      height: height,
+      data_url: chunk,
+      chunkIndex: i,
+      totalChunks: totalChunks,
+    });
+
     setIsPopupOpen(false);
   }
 };
