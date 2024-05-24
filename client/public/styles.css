@@ -112,8 +112,6 @@ footer p {
   overflow: auto;
   max-width: 300px;
   max-height: 300px;
-  min-width: 300px;
-  min-height: 300px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -388,31 +386,14 @@ span.label{
       margin: 16px;
       float: left;
       overflow: auto;
-      max-width: 400px;
+      max-width: 300px;
       max-height: 300px;
-      min-width: 300px;
-      min-height: 300px;
       position: relative;
       display: flex;
       flex-direction: column;
     }
-    .note {
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 2px 5px #ccc;
-    padding: 10px;
-    width: 345px;
-    margin: 16px;
-    float: left;
-    overflow: auto;
-    max-width: 400px;
-    max-height: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
+   
+
 .drawing-note img {
   height: 220px;
   width: 365px;
@@ -430,10 +411,8 @@ span.label{
       margin: 16px;
       float: left;
       overflow: auto;
-      max-width: 400px;
+      max-width: 340px;
       max-height: 300px;
-      min-width: 300px;
-      min-height: 300px;
       position: relative;
       display: flex;
       flex-direction: column;
