@@ -20,23 +20,27 @@ router.get('/', async (req, res) => {
 // Route to save a new drawing
 router.post('/', async (req, res) => {
   try {
-    const { lines, data_url,height, width} = req.body;
+    const { lines, data_url, height, width } = req.body;
 
-    if (!lines || !data_url) {
-      console.error("Invalid drawing data:", { lines, data_url,height , width,updatedat, createdat });
-      return res.status(400).json({ message: "Lines and dataURL are required." });
+    if (!lines || !data_url || !height || !width) {
+      console.error("Invalid drawing data:", { lines, data_url, height, width });
+      return res.status(400).json({ message: "All fields (lines, data_url, height, width) are required." });
     }
+
     const newDrawing = await Drawing.create({
       lines: lines,
       width: width,
       height: height,
       data_url: data_url,
       createdat: new Date(),
-      updatedat: new Date() 
+      updatedat: new Date()
     });
+
     res.status(201).json(newDrawing);
   } catch (err) {
     console.error("Error saving drawing:", err);
+    console.error("Request body:", req.body);
+    console.error("Database error details:", err.message);
     res.status(500).json({ message: "Failed to save drawing." });
   }
 });
