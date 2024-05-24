@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
         .jpeg({ quality: 50 }) 
         .toBuffer(); 
 
-      newNote = await Note.create({ title, content, color, reminder, labels, image_data: compressedImageData });
+      newNote = await Note.create({ title, content, color, reminder, labels, image_data});
     } else {
       newNote = await Note.create({ title, content, color, reminder, labels });
     }
