@@ -63,19 +63,10 @@ const handleSaveDrawing = async () => {
       return;
     }
 
-    console.log("Payload before axios post:", {
-      lines: lines,
-      width: width,
-      height: height,
-      data_url: chunk,
-      chunkIndex: i,
-      totalChunks: totalChunks,
-    });
-
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min((i + 1) * chunkSize, binaryData.length);
-      const chunk = binaryData.slice(start, end);
+      const chunk = binaryData.slice(start, end); // Define chunk inside the loop
       try {
         await axios.post(DRAWINGS_API_URL, {
           lines: lines,
@@ -90,15 +81,6 @@ const handleSaveDrawing = async () => {
         // Handle error appropriately
       }
     }
-
-    console.log("Payload after axios post:", {
-      lines: lines,
-      width: width,
-      height: height,
-      data_url: chunk,
-      chunkIndex: i,
-      totalChunks: totalChunks,
-    });
 
     setIsPopupOpen(false);
   }
