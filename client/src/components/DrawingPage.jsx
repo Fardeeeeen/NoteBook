@@ -46,45 +46,44 @@ const DrawingPage = () => {
     document.body.removeChild(link);
   };
 
-  const handleSaveDrawing = async () => {
-    if (canvasRef.current) {
-      const drawingData = canvasRef.current.getSaveData();
-      const data_url = canvasRef.current.canvas.drawing.toDataURL();
+ const chunkSize = 1024 * 1024; // 1 MB chunk size
 
-      const parsedData = JSON.parse(drawingData);
+const handleSaveDrawing = async () => {
+  if (canvasRef.current) {
+    const drawingData = canvasRef.current.getSaveData();
+    const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
+    
+    // Convert base64 string to binary data
+    const binaryData = atob(dataUrl.split(',')[1]);
+    const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
-      if (!Array.isArray(parsedData.lines) || !parsedData.width || !parsedData.height) {
-        console.error("Invalid drawing data format.");
-        return;
-      }
-
-      const lines = parsedData.lines.filter(line => line.points && line.points.length > 1);
-
-      const drawing = {
-        lines: lines.map(line => ({
-          points: line.points.map(point => ({ x: point.x, y: point.y })),
-          brushColor: line.brushColor,
-          brushRadius: line.brushRadius,
-        })),
-        width: parsedData.width,
-        height: parsedData.height,
-        data_url: data_url
-      };
-
-      if (drawing.lines.length === 0) {
-        console.error("No valid lines to save.");
-        return;
-      }
-
-      try {
-        const response = await axios.post(DRAWINGS_API_URL, drawing);
-        setSavedDrawings(prevDrawings => [...prevDrawings, response.data]);
-        setIsPopupOpen(false);
-      } catch (error) {
-        console.error("Error saving drawing:", error);
-      }
+    // Chunk the binary data
+    const chunks = [];
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min((i + 1) * chunkSize, binaryData.length);
+      chunks.push(binaryData.slice(start, end));
     }
-  };
+
+    try {
+      // Send each chunk to the server
+      for (let i = 0; i < chunks.length; i++) {
+        const response = await axios.post(DRAWINGS_API_URL, {
+          lines: lines,
+          width: width,
+          height: height,
+          data_url: chunks[i],
+          chunkIndex: i,
+          totalChunks: totalChunks,
+        });
+      }
+
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.error("Error saving drawing:", error);
+    }
+  }
+};
 
   const handleDeleteDrawing = async (drawingId) => {
     try {

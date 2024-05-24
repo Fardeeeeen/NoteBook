@@ -20,27 +20,43 @@ router.get('/', async (req, res) => {
 // Route to save a new drawing
 router.post('/', async (req, res) => {
   try {
-    const { lines, data_url, height, width } = req.body;
+    const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;
 
-    if (!lines || !data_url || !height || !width) {
-      console.error("Invalid drawing data:", { lines, data_url, height, width });
-      return res.status(400).json({ message: "All fields (lines, data_url, height, width) are required." });
+    if (!lines || !data_url || !height || !width || chunkIndex === undefined || totalChunks === undefined) {
+      console.error("Invalid drawing data:", { lines, data_url, height, width, chunkIndex, totalChunks });
+      return res.status(400).json({ message: "Incomplete drawing data." });
     }
 
-    const newDrawing = await Drawing.create({
-      lines: lines,
-      width: width,
-      height: height,
-      data_url: data_url,
-      createdat: new Date(),
-      updatedat: new Date()
-    });
+    // Append chunk to existing data or create a new buffer
+    if (!req.session.drawingData) {
+      req.session.drawingData = Buffer.from(data_url, 'base64');
+    } else {
+      req.session.drawingData = Buffer.concat([req.session.drawingData, Buffer.from(data_url, 'base64')]);
+    }
 
-    res.status(201).json(newDrawing);
+    // Check if all chunks have been received
+    if (chunkIndex === totalChunks - 1) {
+      const dataUrl = `data:image/png;base64,${req.session.drawingData.toString('base64')}`;
+
+      // Save drawing to database
+      const newDrawing = await Drawing.create({
+        lines: lines,
+        width: width,
+        height: height,
+        data_url: dataUrl,
+        createdat: new Date(),
+        updatedat: new Date()
+      });
+
+      // Clear session data
+      delete req.session.drawingData;
+
+      res.status(201).json(newDrawing);
+    } else {
+      res.status(200).end();
+    }
   } catch (err) {
     console.error("Error saving drawing:", err);
-    console.error("Request body:", req.body);
-    console.error("Database error details:", err.message);
     res.status(500).json({ message: "Failed to save drawing." });
   }
 });
