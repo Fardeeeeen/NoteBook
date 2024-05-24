@@ -27,12 +27,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: "Incomplete drawing data." });
     }
 
-    // Append chunk to existing data or create a new buffer
-    if (!req.session.drawingData) {
-      req.session.drawingData = Buffer.from(data_url, 'base64');
-    } else {
-      req.session.drawingData = Buffer.concat([req.session.drawingData, Buffer.from(data_url, 'base64')]);
-    }
+    // Decode and concatenate data chunks
+    const imageData = Buffer.from(data_url.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+    const existingData = req.session.drawingData || Buffer.alloc(0);
+    req.session.drawingData = Buffer.concat([existingData, imageData]);
 
     // Check if all chunks have been received
     if (chunkIndex === totalChunks - 1) {
@@ -60,7 +58,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: "Failed to save drawing." });
   }
 });
-
 
 // Route to delete a drawing
 router.delete('/:id', async (req, res) => {
