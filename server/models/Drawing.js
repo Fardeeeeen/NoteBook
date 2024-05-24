@@ -12,7 +12,7 @@ const Drawing = db.define('drawings', {
     allowNull: false
   },
   data_url: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   },
   width: {
@@ -28,7 +28,7 @@ const Drawing = db.define('drawings', {
     allowNull: false,
     defaultValue: DataTypes.NOW
   },
-  updatedat: { // Corrected column name to 'updatedat'
+  updatedat: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW
