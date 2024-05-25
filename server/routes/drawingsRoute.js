@@ -1,10 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 import Drawing from '../models/Drawing.js';
 
 const router = express.Router();
 
 router.use(bodyParser.json({ limit: '50mb' }));
+
+// Session middleware setup
+router.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 // Route to get all drawings
 router.get('/', async (req, res) => {
@@ -32,7 +41,7 @@ router.post('/', async (req, res) => {
     }
 
     // Decode and concatenate data chunks
-    const imageData = Buffer.from(data_url.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+    const imageData = Buffer.from(data_url, 'base64');
     req.session.drawingData = Buffer.concat([req.session.drawingData, imageData]);
 
     // Check if all chunks have been received

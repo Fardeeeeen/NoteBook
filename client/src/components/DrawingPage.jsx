@@ -46,9 +46,7 @@ const DrawingPage = () => {
     document.body.removeChild(link);
   };
 
- const chunkSize = 1024 * 1024; // 1 MB chunk size
-
-const handleSaveDrawing = async () => {
+ const handleSaveDrawing = async () => {
   if (canvasRef.current) {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
@@ -64,6 +62,7 @@ const handleSaveDrawing = async () => {
     }
 
     const binaryData = atob(dataUrl.split(',')[1]);
+    const chunkSize = 1024 * 1024; // Define chunk size (e.g., 1MB)
     const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
     // Chunk the binary data
@@ -77,7 +76,7 @@ const handleSaveDrawing = async () => {
     try {
       // Send each chunk to the server
       for (let i = 0; i < chunks.length; i++) {
-        await axios.post(DRAWINGS_API_URL, {
+        const response = await axios.post(DRAWINGS_API_URL, {
           lines: lines,
           width: width,
           height: height,
@@ -85,6 +84,7 @@ const handleSaveDrawing = async () => {
           chunkIndex: i,
           totalChunks: totalChunks,
         });
+        console.log(`Chunk ${i + 1}/${totalChunks} sent successfully.`);
       }
       setIsPopupOpen(false);
     } catch (error) {
