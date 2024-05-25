@@ -53,8 +53,8 @@ const handleSaveDrawing = async () => {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
     const lines = JSON.parse(drawingData).lines;
-    const width = canvasRef.current.canvas.width;
-    const height = canvasRef.current.canvas.height;
+    const width = JSON.parse(drawingData).width;
+    const height = JSON.parse(drawingData).height;
     const binaryData = atob(dataUrl.split(',')[1]);
     const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
