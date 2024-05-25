@@ -58,31 +58,30 @@ const handleSaveDrawing = async () => {
     const binaryData = atob(dataUrl.split(',')[1]);
     const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
-    if (!Array.isArray(lines) || !lines.length) {
-      console.error("Invalid drawing data format.");
-      return;
-    }
-
+    // Chunk the binary data
+    const chunks = [];
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min((i + 1) * chunkSize, binaryData.length);
-      const chunk = binaryData.slice(start, end); // Define chunk inside the loop
-      try {
-        await axios.post(DRAWINGS_API_URL, {
+      chunks.push(binaryData.slice(start, end));
+    }
+
+    try {
+      // Send each chunk to the server
+      for (let i = 0; i < chunks.length; i++) {
+        const response = await axios.post(DRAWINGS_API_URL, {
           lines: lines,
           width: width,
           height: height,
-          data_url: chunk,
+          data_url: chunks[i],
           chunkIndex: i,
           totalChunks: totalChunks,
         });
-      } catch (error) {
-        console.error("Error saving chunk:", error);
-        // Handle error appropriately
       }
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.error("Error saving drawing:", error);
     }
-
-    setIsPopupOpen(false);
   }
 };
 
