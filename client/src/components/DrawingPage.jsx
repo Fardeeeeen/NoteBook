@@ -53,8 +53,16 @@ const handleSaveDrawing = async () => {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
     const lines = JSON.parse(drawingData).lines;
-    const width = JSON.parse(drawingData).width;
-    const height = JSON.parse(drawingData).height;
+
+    // Get width and height from the canvas element directly
+    const width = canvasRef.current.canvas.width;
+    const height = canvasRef.current.canvas.height;
+
+    if (!width || !height) {
+      console.error("Canvas width or height is not defined:", { width, height });
+      return;
+    }
+
     const binaryData = atob(dataUrl.split(',')[1]);
     const totalChunks = Math.ceil(binaryData.length / chunkSize);
 
@@ -69,7 +77,7 @@ const handleSaveDrawing = async () => {
     try {
       // Send each chunk to the server
       for (let i = 0; i < chunks.length; i++) {
-        const response = await axios.post(DRAWINGS_API_URL, {
+        await axios.post(DRAWINGS_API_URL, {
           lines: lines,
           width: width,
           height: height,

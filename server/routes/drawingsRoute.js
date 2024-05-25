@@ -17,20 +17,23 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Route to save a new drawing
 router.post('/', async (req, res) => {
   try {
     const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;
 
-    if (!lines || !data_url || !height || !width || chunkIndex === undefined || totalChunks === undefined) {
+    if (!lines || !data_url || height === undefined || width === undefined || chunkIndex === undefined || totalChunks === undefined) {
       console.error("Invalid drawing data:", { lines, data_url, height, width, chunkIndex, totalChunks });
       return res.status(400).json({ message: "Incomplete drawing data." });
     }
 
+    // Ensure session object is initialized
+    if (!req.session.drawingData) {
+      req.session.drawingData = Buffer.alloc(0);
+    }
+
     // Decode and concatenate data chunks
     const imageData = Buffer.from(data_url.replace(/^data:image\/\w+;base64,/, ""), 'base64');
-    const existingData = req.session.drawingData || Buffer.alloc(0);
-    req.session.drawingData = Buffer.concat([existingData, imageData]);
+    req.session.drawingData = Buffer.concat([req.session.drawingData, imageData]);
 
     // Check if all chunks have been received
     if (chunkIndex === totalChunks - 1) {
