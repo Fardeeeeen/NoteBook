@@ -16,16 +16,6 @@ router.use(session({
 }));
 
 // Route to get all drawings
-router.get('/', async (req, res) => {
-  try {
-    const drawings = await Drawing.findAll();
-    res.status(200).json(drawings);
-  } catch (err) {
-    console.error("Error fetching drawings:", err);
-    res.status(500).json({ message: "Failed to fetch drawings." });
-  }
-});
-
 router.post('/', async (req, res) => {
   try {
     const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;

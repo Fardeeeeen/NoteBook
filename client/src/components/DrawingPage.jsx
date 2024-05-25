@@ -50,14 +50,29 @@ const DrawingPage = () => {
   if (canvasRef.current) {
     const drawingData = canvasRef.current.getSaveData();
     const dataUrl = canvasRef.current.canvas.drawing.toDataURL();
-    const lines = JSON.parse(drawingData).lines;
 
-    // Get width and height from the canvas element directly
-    const width = canvasRef.current.canvas.width;
-    const height = canvasRef.current.canvas.height;
+    const parsedData = JSON.parse(drawingData);
 
-    if (!width || !height) {
-      console.error("Canvas width or height is not defined:", { width, height });
+    if (!Array.isArray(parsedData.lines) || !parsedData.width || !parsedData.height) {
+      console.error("Invalid drawing data format.");
+      return;
+    }
+
+    const lines = parsedData.lines.filter(line => line.points && line.points.length > 1);
+
+    const drawing = {
+      lines: lines.map(line => ({
+        points: line.points.map(point => ({ x: point.x, y: point.y })),
+        brushColor: line.brushColor,
+        brushRadius: line.brushRadius,
+      })),
+      width: parsedData.width,
+      height: parsedData.height,
+      data_url: dataUrl,
+    };
+
+    if (drawing.lines.length === 0) {
+      console.error("No valid lines to save.");
       return;
     }
 
@@ -76,10 +91,10 @@ const DrawingPage = () => {
     try {
       // Send each chunk to the server
       for (let i = 0; i < chunks.length; i++) {
-        const response = await axios.post(DRAWINGS_API_URL, {
-          lines: lines,
-          width: width,
-          height: height,
+        await axios.post(DRAWINGS_API_URL, {
+          lines: drawing.lines,
+          width: drawing.width,
+          height: drawing.height,
           data_url: chunks[i],
           chunkIndex: i,
           totalChunks: totalChunks,
