@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import { errorHandler } from './middleware/errorHandler.js';
 import noteRoutes from './routes/noteRoutes.js';
 import drawingsRoute from './routes/drawingsRoute.js';
