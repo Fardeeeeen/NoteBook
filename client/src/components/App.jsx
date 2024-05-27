@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Header from "./Header";
 import CreateArea from "./CreateArea";
@@ -72,23 +72,13 @@ function App() {
 
 const addNote = async (newNote) => {
   try {
-    let response;
-
-    if (newNote instanceof FormData) {
-      response = await axios.post(API_URL, newNote, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    } else {
-      response = await axios.post(API_URL, newNote);
-    }
-
-    setNotes((prevNotes) => [...prevNotes, response.data]);
+    const response = await axios.post(API_URL, newNote);
+    setNotes(prevNotes => [...prevNotes, response.data]);
   } catch (error) {
-    console.error("Error adding note:", error.response.data);
+    console.error("Error adding note:", error);
   }
 };
+
 
 
 const moveNoteToTrash = async (id) => {
