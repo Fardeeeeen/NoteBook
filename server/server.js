@@ -7,10 +7,13 @@ import { errorHandler } from './middleware/errorHandler.js';
 import noteRoutes from './routes/noteRoutes.js';
 import drawingsRoute from './routes/drawingsRoute.js';
 import sequelize from './config/database.js';
+import { fileURLToPath } from 'url'; 
 import path from 'path';
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url); 
+const __dirname = path.dirname(__filename); 
 const app = express();
 
 // Middleware
