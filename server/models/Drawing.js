@@ -12,7 +12,7 @@ const Drawing = db.define('drawings', {
     allowNull: false
   },
   data_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   width: {

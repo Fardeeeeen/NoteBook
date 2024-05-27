@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.use(bodyParser.json({ limit: '50mb' }));
 
-// Session middleware setup
 router.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -16,6 +15,17 @@ router.use(session({
 }));
 
 // Route to get all drawings
+router.get('/', async (req, res) => {
+  try {
+    const drawings = await Drawing.findAll();
+    res.status(200).json(drawings);
+  } catch (err) {
+    console.error("Error fetching drawings:", err);
+    res.status(500).json({ message: "Failed to fetch drawings." });
+  }
+});
+
+// Route to save drawings with chunking
 router.post('/', async (req, res) => {
   try {
     const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;
@@ -25,30 +35,25 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: "Incomplete drawing data." });
     }
 
-    // Ensure session object is initialized
     if (!req.session.drawingData) {
       req.session.drawingData = Buffer.alloc(0);
     }
 
-    // Decode and concatenate data chunks
     const imageData = Buffer.from(data_url, 'base64');
     req.session.drawingData = Buffer.concat([req.session.drawingData, imageData]);
 
-    // Check if all chunks have been received
     if (chunkIndex === totalChunks - 1) {
-      const dataUrl = `data:image/png;base64,${req.session.drawingData.toString('base64')}`;
+      const finalDataUrl = `data:image/png;base64,${req.session.drawingData.toString('base64')}`;
 
-      // Save drawing to database
       const newDrawing = await Drawing.create({
         lines: lines,
         width: width,
         height: height,
-        data_url: dataUrl,
+        data_url: finalDataUrl,
         createdat: new Date(),
         updatedat: new Date()
       });
 
-      // Clear session data
       delete req.session.drawingData;
 
       res.status(201).json(newDrawing);
