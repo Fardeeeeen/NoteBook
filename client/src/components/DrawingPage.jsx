@@ -76,31 +76,8 @@ const DrawingPage = () => {
       return;
     }
 
-    const binaryData = atob(dataUrl.split(',')[1]);
-    const chunkSize = 1024 * 1024; // Define chunk size (e.g., 1MB)
-    const totalChunks = Math.ceil(binaryData.length / chunkSize);
-
-    // Chunk the binary data
-    const chunks = [];
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * chunkSize;
-      const end = Math.min((i + 1) * chunkSize, binaryData.length);
-      chunks.push(binaryData.slice(start, end));
-    }
-
     try {
-      // Send each chunk to the server
-      for (let i = 0; i < chunks.length; i++) {
-        await axios.post(DRAWINGS_API_URL, {
-          lines: drawing.lines,
-          width: drawing.width,
-          height: drawing.height,
-          data_url: chunks[i],
-          chunkIndex: i,
-          totalChunks: totalChunks,
-        });
-        console.log(`Chunk ${i + 1}/${totalChunks} sent successfully.`);
-      }
+      await axios.post(DRAWINGS_API_URL, drawing);
       setIsPopupOpen(false);
       fetchDrawings();
     } catch (error) {
@@ -128,7 +105,7 @@ const DrawingPage = () => {
         {savedDrawings.map((drawing, index) => (
           <div key={index} className="drawing-note">
             <div className="tooltip">
-              <img src={drawing.data_url} alt={`Drawing ${index}`} onClick={() => handleDrawingClick(drawing)} />
+              <img src={drawing.data_url} alt={`Drawing ${index + 1}`} onClick={() => handleDrawingClick(drawing)} />
               <span className="tooltiptext">Preview</span>
             </div>
             <div className="button-container">

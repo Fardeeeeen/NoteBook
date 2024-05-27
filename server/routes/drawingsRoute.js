@@ -26,54 +26,30 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Route to save drawings with chunking
+// Route to save a new drawing
 router.post('/', async (req, res) => {
   try {
-    const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;
+    const { lines, data_url,height, width} = req.body;
 
-    
-    console.log('Received drawing:', {
-      data_url_size: data_url.length,
-      lines,
-      width,
-      height,
+    if (!lines || !data_url) {
+      console.error("Invalid drawing data:", { lines, data_url,height , width,updatedat, createdat });
+      return res.status(400).json({ message: "Lines and dataURL are required." });
+    }
+    const newDrawing = await Drawing.create({
+      lines: lines,
+      width: width,
+      height: height,
+      data_url: data_url,
+      createdat: new Date(),
+      updatedat: new Date() 
     });
-
-    if (!lines || !data_url || height === undefined || width === undefined || chunkIndex === undefined || totalChunks === undefined) {
-      console.error("Invalid drawing data:", { lines, data_url, height, width, chunkIndex, totalChunks });
-      return res.status(400).json({ message: "Incomplete drawing data." });
-    }
-
-    if (!req.session.drawingData) {
-      req.session.drawingData = Buffer.alloc(0);
-    }
-
-    const imageData = Buffer.from(data_url, 'base64');
-    req.session.drawingData = Buffer.concat([req.session.drawingData, imageData]);
-
-    if (chunkIndex === totalChunks - 1) {
-      const finalDataUrl = `data:image/png;base64,${req.session.drawingData.toString('base64')}`;
-
-      const newDrawing = await Drawing.create({
-        lines: lines,
-        width: width,
-        height: height,
-        data_url: finalDataUrl,
-        createdat: new Date(),
-        updatedat: new Date()
-      });
-
-      delete req.session.drawingData;
-
-      res.status(201).json(newDrawing);
-    } else {
-      res.status(200).end();
-    }
+    res.status(201).json(newDrawing);
   } catch (err) {
     console.error("Error saving drawing:", err);
     res.status(500).json({ message: "Failed to save drawing." });
   }
 });
+
 
 // Route to delete a drawing
 router.delete('/:id', async (req, res) => {
