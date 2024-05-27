@@ -101,6 +101,8 @@ const DrawingPage = () => {
         });
         console.log(`Chunk ${i + 1}/${totalChunks} sent successfully.`);
       }
+      const response = await axios.get(DRAWINGS_API_URL);
+      setSavedDrawings(response.data);
       setIsPopupOpen(false);
     } catch (error) {
       console.error("Error saving drawing:", error);
