@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.use(bodyParser.json({ limit: '50mb' }));
 
+
 router.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -29,6 +30,14 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { lines, data_url, height, width, chunkIndex, totalChunks } = req.body;
+
+    
+    console.log('Received drawing:', {
+      data_url_size: data_url.length,
+      lines,
+      width,
+      height,
+    });
 
     if (!lines || !data_url || height === undefined || width === undefined || chunkIndex === undefined || totalChunks === undefined) {
       console.error("Invalid drawing data:", { lines, data_url, height, width, chunkIndex, totalChunks });
