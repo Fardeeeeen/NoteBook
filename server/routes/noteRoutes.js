@@ -25,15 +25,28 @@ router.post('/', async (req, res) => {
   try {
     let newNote;
     if (image_data) {
-      const binaryImageData = Buffer.from(image_data.data, 'binary');
+      const binaryImageData = Buffer.from(image_data.data, 'base64'); 
       const compressedImageData = await sharp(binaryImageData)
-        .resize(200) 
-        .jpeg({ quality: 50 }) 
-        .toBuffer(); 
+        .resize(200)
+        .jpeg({ quality: 50 })
+        .toBuffer();
 
-      newNote = await Note.create({ title, content, color, reminder, labels, image_data});
+      newNote = await Note.create({
+        title,
+        content,
+        color,
+        reminder,
+        labels,
+        image_data: compressedImageData, 
+      });
     } else {
-      newNote = await Note.create({ title, content, color, reminder, labels });
+      newNote = await Note.create({
+        title,
+        content,
+        color,
+        reminder,
+        labels,
+      });
     }
     res.status(201).json(newNote);
   } catch (err) {
