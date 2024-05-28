@@ -10,11 +10,11 @@ const Note = db.define('note', {
   },
   title: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   content: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
   color: {
     type: DataTypes.STRING,
